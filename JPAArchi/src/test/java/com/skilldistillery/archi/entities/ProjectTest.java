@@ -2,6 +2,9 @@ package com.skilldistillery.archi.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.time.Month;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -46,8 +49,17 @@ class ProjectTest {
 		assertNotNull(project);
 		assertNotNull(project.getId());
 		assertEquals(1001, project.getReferenceNumber());
-		assertEquals("Our Own Home Renovation", project.getTitle());
-		assertEquals("Ourselves", project.getClient());
+		assertEquals("Single Family Home Porch Addition", project.getTitle());
+		assertEquals("Molly Moderne", project.getClient());
+		assertEquals(true, project.getIsActive());
+		assertEquals("100% Construction Documents", project.getContractPhase());
+		assertEquals("35% Schematic Design", project.getWorkingPhase());
+		assertEquals("Revisions", project.getPhaseStatus());
+		assertEquals(2580, project.getFee());
+		assertEquals(Month.AUGUST, project.getCreatedAt().getMonth());
+		assertEquals(2023, project.getUpdatedAt().getYear());
+		assertEquals("", project.getNote());
+		
 	}
 
 }
