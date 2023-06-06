@@ -2,7 +2,7 @@
 
 ## Overview
 
-Allows the user to view and modify architectural projects (`events`), within a database using the URIs charted below. 
+Allows the user to view and modify architectural projects (`events`), within a database using the REST route URIs charted below. 
 The project tracker functions are designed for staff of an architectural firm, allowing them to add, update, and remove 
 projects as they progress through design phases. Project inserts with id values 1-5 are pre-populated.
 
@@ -18,6 +18,10 @@ projects as they progress through design phases. Project inserts with id values 
 
 ## Technologies Used
 
+- JPA
+- REST API
+- Postman
+- JSON
 - Spring Tool Suite
 - Git
 - GitHub
@@ -25,5 +29,8 @@ projects as they progress through design phases. Project inserts with id values 
 
 ## Lessons Learned
 
-- 
-
+- Mapped a POJO entity class to a database table using JPA.
+- Applied Spring REST annotations to the project controller, with GET, POST, PUT, and DELETE mappings with 
+Path Variables and Request Bodies.
+- Created a project repository, extending the Spring JPA Repository to complete create, read (all and by id), update, and delete functions.
+- Tested functionality in Postman with JSON input/outputs.
