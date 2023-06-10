@@ -39,20 +39,13 @@ function getProject(projectId) {
 		}
 	};
 	xhr.send();
-}
-
-function displayError(errorMessage) {
-	let projectDiv = document.getElementById('projectData');
-	projectDiv.textContent = '';
-	let messageElement = document.createElement('h4');
-	messageElement.textContent = errorMessage;
-	messageElement.style.color = 'red';
-	projectDiv.appendChild(messageElement);
 };
 
 function displayProject(project) {
 	let projectDiv = document.getElementById('projectData');
 	projectDiv.textContent = '';
+	let hr = document.createElement('hr');
+	projectDiv.appendChild(hr);
 	let h2Title = document.createElement('h2');
 	h2Title.textContent = project.referenceNumber + ': ' + project.title;
 	projectDiv.appendChild(h2Title);
@@ -82,7 +75,8 @@ function displayProject(project) {
 	let noteBlockquote = document.createElement('blockquote');
 	noteBlockquote.textContent = 'Note: ' + project.note;
 	projectDiv.appendChild(noteBlockquote);
-
+	
+	projectDiv.appendChild(deleteForm(project.id, project.referenceNumber, project.title));
 };
 
 
@@ -103,7 +97,6 @@ function createProject(form) {
 };
 
 function addProject(project) {
-
 	let xhr = new XMLHttpRequest();
 	xhr.open('POST', 'api/projects/');
 	xhr.setRequestHeader("Content-type", "application/json");
@@ -125,9 +118,65 @@ function addProject(project) {
 	xhr.send(jsonProject);
 };
 
+function deleteForm(projectId, projectRefNum, projectTitle) {
+	let deleteForm = document.createElement('form');
+	deleteForm.name = 'deleteProjectForm';
+	let projectIdInput = document.createElement('input');
+	projectIdInput.type = 'hidden';
+	projectIdInput.name = 'projectId';
+	projectIdInput.value = projectId;
+	deleteForm.appendChild(projectIdInput);	
+	let deleteButton = document.createElement('button');
+	deleteButton.textContent = 'Delete this Project';
+	deleteForm.appendChild(deleteButton);
+	deleteButton.addEventListener('click', function(event) {
+		event.preventDefault();
+		console.log('Delete project ' + projectId);
+		deleteProject(projectId, projectRefNum, projectTitle);
+	});
+	return deleteForm;	
+};
 
+function deleteProject(projectId, projectRefNum, projectTitle) {
+	let xhr = new XMLHttpRequest();
+	xhr.open('DELETE', 'api/projects/' + projectId);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {
+			if (xhr.status == 204) {
+				let successMessage = projectRefNum + ': ' + projectTitle + ' deleted.';
+				console.log(successMessage);
+				displayDeleteSuccess(successMessage);
+			}
+			else {
+				displayError();
+				console.error("Project not Found.");
+				console.error(xhr.status + ': ' + xhr.responseText);
+				displayError('Project not found.');
+			}
+		}
+	};
+	xhr.send();
+};
 
+function displayDeleteSuccess(successMessage) {
+	let projectDiv = document.getElementById('projectData');
+	projectDiv.textContent = '';
+	let hr = document.createElement('hr');
+	projectDiv.appendChild(hr);
+	let messageElement = document.createElement('h4');
+	messageElement.textContent = successMessage;
+	messageElement.style.fontStyle = 'italic';
+	projectDiv.appendChild(messageElement);
+};
 
+function displayError(errorMessage) {
+	let projectDiv = document.getElementById('projectData');
+	projectDiv.textContent = '';
+	let messageElement = document.createElement('h4');
+	messageElement.textContent = errorMessage;
+	messageElement.style.color = 'red';
+	projectDiv.appendChild(messageElement);
+};
 
 
 
