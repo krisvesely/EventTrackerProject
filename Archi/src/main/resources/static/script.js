@@ -6,22 +6,114 @@ window.addEventListener('load', function(e) {
 });
 
 function init() {
-	document.searchByIdForm.lookup.addEventListener('click', function(event) {
+//	document.searchByIdForm.lookup.addEventListener('click', function(event) {
+//		event.preventDefault();
+//		let projectId = document.searchByIdForm.projectId.value;
+//		if (!isNaN(projectId) && projectId > 0) {
+//			getProject(projectId);
+//		}
+//	});
+	document.showAllForm.showAll.addEventListener('click', function(event) {
 		event.preventDefault();
-		let projectId = document.searchByIdForm.projectId.value;
-		if (!isNaN(projectId) && projectId > 0) {
-			getProject(projectId);
-		}
+		getAllProjects();
 	});
 	document.searchByActiveForm.lookupByIsActive.addEventListener('click', function(event) {
 		event.preventDefault();
 		getProjectsByActiveStatus();
 	});
+	getAllProjects();
 	document.newProjectForm.createProject.addEventListener('click', function(event) {
 		event.preventDefault();
 		let newProjectForm = document.newProjectForm;
 		createProject(newProjectForm);
 	});
+};
+
+function getAllProjects() {
+	let xhr = new XMLHttpRequest();
+	xhr.open('GET', 'api/projects');
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {
+			if (xhr.status == 200) {
+				let projectDiv = document.getElementById('projectData');
+				projectDiv.textContent = '';
+				let projectList = JSON.parse(xhr.responseText);
+				console.log(projectList);
+				displayProjectTable(projectList);
+
+			}
+			else {
+				displayError();
+				console.error("No projects found.");
+				console.error(xhr.status + ': ' + xhr.responseText);
+				displayError('No projects found.');
+			}
+		}
+	};
+	xhr.send();
+};
+
+function displayProjectTable(projectList) {
+	let projectDiv = document.getElementById('projectData');
+	projectDiv.textContent = '';
+	
+	let hr = document.createElement('hr');
+	projectDiv.appendChild(hr);
+	let title = document.createElement('h4');
+	title.textContent = 'All Projects';
+	projectDiv.appendChild(title);
+	let projTable = document.createElement('table');
+//	projTable.class = 'table table-striped';
+	
+	let tableHead = document.createElement('thead');
+	let headTr = document.createElement('tr');
+	let head1 = document.createElement('th');
+	head1.textContent = 'Ref. No.';
+	headTr.appendChild(head1);
+	let head2 = document.createElement('th');
+	head2.textContent = 'Project Title';
+	headTr.appendChild(head2);
+	let head3 = document.createElement('th');
+	head3.textContent = 'View More';
+	headTr.appendChild(head3);
+	tableHead.appendChild(headTr);
+	projTable.appendChild(tableHead);
+	
+	let body = document.createElement('tbody');
+	for (let project of projectList) {
+		let tr = document.createElement('tr');
+		let refNoTd = document.createElement('td');
+		refNoTd.textContent = project.referenceNumber;
+		tr.appendChild(refNoTd);
+		let titleTd = document.createElement('td');
+		titleTd.textContent = project.title;
+		tr.appendChild(titleTd);
+		let buttonTd = document.createElement('td');
+		buttonTd.appendChild(selectForm(project.id));
+		tr.appendChild(buttonTd);
+		body.appendChild(tr);
+	}
+	projTable.appendChild(body);
+	projectDiv.appendChild(projTable);
+};
+
+function selectForm(projectId) {
+	let selectForm = document.createElement('form');
+	selectForm.name = 'selectProjectForm';
+	let projectIdInput = document.createElement('input');
+	projectIdInput.type = 'hidden';
+	projectIdInput.name = 'projectId';
+	projectIdInput.value = projectId;
+	selectForm.appendChild(projectIdInput);	
+	let selectButton = document.createElement('button');
+	selectButton.textContent = 'Project Details';
+	selectForm.appendChild(selectButton);
+	selectButton.addEventListener('click', function(event) {
+		event.preventDefault();
+		console.log('Select project ' + projectId);
+		getProject(projectId);
+	});
+	return selectForm;	
 };
 
 function getProject(projectId) {
@@ -74,15 +166,19 @@ function getProjectsByActiveStatus() {
 function displayProjects(projectList) {
 	let count = projectList.length;
 	let contractValue = 0; 
+
 	for (let project of projectList) {
 		displayProject(project);
 		contractValue += project.fee;
 	} 
+	
 	let projectDiv = document.getElementById('projectData');
-	let activeSummary = document.createElement('h2');
+	let hr = document.createElement('hr');
+	let activeSummary = document.createElement('h4');
 	activeSummary.textContent = count + ' active projects totalling $' + contractValue + ' in professional fees.'
 	activeSummary.style.color = 'darkgreen';
 	projectDiv.prepend(activeSummary);
+	projectDiv.prepend(hr);
 };
 
 function displayProject(project) {
@@ -189,6 +285,10 @@ function updateForm(project) {
 };
 
 function updateProjectForm(project) {
+	let projectDiv = document.getElementById('projectData');
+	projectDiv.textContent = '';
+//	getProject(project.id);
+	
 	let updateDiv = document.getElementById('updateFormDiv');
 	updateDiv.style.display = 'flex';
 	let createDiv = document.getElementById('newFormDiv');
@@ -202,10 +302,6 @@ function updateProjectForm(project) {
 	let client = updateForm.client;
 	client.value =  `${project.client}`;
 	let isActive = updateForm.isActive;
-	console.log(isActive);
-	console.log(isActive.children);
-	console.log(isActive.children.length);
-	console.log(`${project.isActive}`);
 	for (let i = 0; i < isActive.children.length; i++) {
 		if (isActive.children[i].value === `${project.isActive}`) {
 			isActive.children[i].selected = true;
@@ -239,6 +335,7 @@ function updateProjectForm(project) {
 		console.log('Create project update ' + project.id);
 		createUpdateProject(project.id, updateForm);
 	});
+
 };
 
 function createUpdateProject(projectId, form) {
@@ -309,6 +406,7 @@ function deleteProject(projectId, projectRefNum, projectTitle) {
 				let successMessage = projectRefNum + ': ' + projectTitle + ' deleted.';
 				console.log(successMessage);
 				displayDeleteSuccess(successMessage);
+				getAllProjects();
 			}
 			else {
 				displayError();

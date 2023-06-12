@@ -39,7 +39,6 @@ public class ProjectController {
 		return project;
 	}
 	
-	
 	@GetMapping("projects/active")
 	public List<Project> showActiveProjects(HttpServletResponse res) {
 		List<Project> projects = projectService.findByActiveStatus();

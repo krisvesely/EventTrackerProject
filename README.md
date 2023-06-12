@@ -6,6 +6,9 @@ Allows the user to view and modify architectural projects (`events`) within a da
 The project tracker functions are designed for staff of an architectural firm, allowing them to add, update, and remove 
 projects as they progress through design phases. Project inserts with id values 1-5 are pre-populated.
 
+## Database
+![image info](./DB/archi_schema.png)
+
 ### Routes
 
 | Return Type      | Route                     | Functionality                      |
