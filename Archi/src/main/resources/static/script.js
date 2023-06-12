@@ -76,7 +76,13 @@ function displayProject(project) {
 	noteBlockquote.textContent = 'Note: ' + project.note;
 	projectDiv.appendChild(noteBlockquote);
 	
+	projectDiv.appendChild(updateForm(project));
 	projectDiv.appendChild(deleteForm(project.id, project.referenceNumber, project.title));
+	
+	let updateDiv = document.getElementById('updateFormDiv');
+	updateDiv.style.display = 'none';
+	let createDiv = document.getElementById('newFormDiv');
+	createDiv.style.display = 'flex';
 };
 
 
@@ -111,6 +117,119 @@ function addProject(project) {
 				console.error("POST request failed.");
 				console.error(xhr.status + ': ' + xhr.responseText);
 				displayError('Reference Number already exists in database.');
+			}
+		}
+	};
+	let jsonProject = JSON.stringify(project);
+	xhr.send(jsonProject);
+};
+
+function updateForm(project) {
+	let updateFormBtn = document.createElement('form');
+	updateFormBtn.name = 'updateProjectFormBtn';
+	let projectIdInput = document.createElement('input');
+	projectIdInput.type = 'hidden';
+	projectIdInput.name = 'projectId';
+	projectIdInput.value = project.id;
+	updateFormBtn.appendChild(projectIdInput);	
+	let updateButton = document.createElement('button');
+	updateButton.textContent = 'Update this Project';
+	updateFormBtn.appendChild(updateButton);
+	updateButton.addEventListener('click', function(event) {
+		event.preventDefault();
+		console.log('Update project ' + project.id);
+		updateProjectForm(project);
+	});
+	return updateFormBtn;	
+};
+
+function updateProjectForm(project) {
+	let updateDiv = document.getElementById('updateFormDiv');
+	updateDiv.style.display = 'flex';
+	let createDiv = document.getElementById('newFormDiv');
+	createDiv.style.display = 'none';
+	
+	let updateForm = document.updateProjectForm;
+	let referenceNumber = updateForm.referenceNumber;
+	referenceNumber.value = `${project.referenceNumber}`;
+	let title = updateForm.title;
+	title.value =  `${project.title}`;
+	let client = updateForm.client;
+	client.value =  `${project.client}`;
+	let isActive = updateForm.isActive;
+	console.log(isActive);
+	console.log(isActive.children);
+	console.log(isActive.children.length);
+	console.log(`${project.isActive}`);
+	for (let i = 0; i < isActive.children.length; i++) {
+		if (isActive.children[i].value === `${project.isActive}`) {
+			isActive.children[i].selected = true;
+		}	
+	}
+	let contractPhase = updateForm.contractPhase;
+	for (let i = 0; i < contractPhase.children.length; i++) {
+		if (contractPhase.children[i].value === `${project.contractPhase}`) {
+			contractPhase.children[i].selected = true;
+		}	
+	}
+	let workingPhase = updateForm.workingPhase;
+	for (let i = 0; i < workingPhase.children.length; i++) {
+		if (workingPhase.children[i].value === `${project.workingPhase}`) {
+			workingPhase.children[i].selected = true;
+		}	
+	}
+	let phaseStatus = updateForm.phaseStatus;
+	for (let i = 0; i < phaseStatus.children.length; i++) {
+		if (phaseStatus.children[i].value === `${project.phaseStatus}`) {
+			phaseStatus.children[i].selected = true;
+		}	
+	}
+	let fee = updateForm.fee;
+	fee.value =  `${project.fee}`;
+	let note = updateForm.note;
+	note.value =  `${project.note}`;
+	let submitUpdateBtn = updateForm.updateProject;
+	submitUpdateBtn.addEventListener('click', function(event) {
+		event.preventDefault();
+		console.log('Create project update ' + project.id);
+		createUpdateProject(project.id, updateForm);
+	});
+//	  		<button name="createProject">Create Project</button>
+};
+
+function createUpdateProject(projectId, form) {
+	let updatingProject = {
+		"id": projectId,
+		"referenceNumber": Number.parseInt(form.referenceNumber.value),
+		"title": form.title.value,
+		"client": form.client.value,
+		"isActive": form.isActive.value,
+		"contractPhase": form.contractPhase.value,
+		"workingPhase": form.workingPhase.value,
+		"phaseStatus": form.phaseStatus.value,
+		"fee": Number.parseInt(form.fee.value),
+		"note": form.note.value
+	}
+	updateProject(updatingProject);		
+};
+
+
+function updateProject(project) {
+	let xhr = new XMLHttpRequest();
+	xhr.open('PUT', 'api/projects/' + project.id);
+	xhr.setRequestHeader("Content-type", "application/json");
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {
+			if (xhr.status == 200) {
+				let project = JSON.parse(xhr.responseText);
+				displayProject(project);
+				console.log(project);
+			}
+			else {
+				displayError();
+				console.error("Project update failed.");
+				console.error(xhr.status + ': ' + xhr.responseText);
+				displayError('Project update failed.');
 			}
 		}
 	};
