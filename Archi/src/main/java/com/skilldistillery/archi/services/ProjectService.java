@@ -7,6 +7,7 @@ import com.skilldistillery.archi.entities.Project;
 public interface ProjectService {
 	
 	List<Project> findAll();
+	List<Project> findByActiveStatus();
 	Project findById(int projectId);
 	Project create(Project newProject);
 	Project update(int projectId, Project updatingProject);

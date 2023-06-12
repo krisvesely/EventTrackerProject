@@ -13,6 +13,10 @@ function init() {
 			getProject(projectId);
 		}
 	});
+	document.searchByActiveForm.lookupByIsActive.addEventListener('click', function(event) {
+		event.preventDefault();
+		getProjectsByActiveStatus();
+	});
 	document.newProjectForm.createProject.addEventListener('click', function(event) {
 		event.preventDefault();
 		let newProjectForm = document.newProjectForm;
@@ -26,6 +30,8 @@ function getProject(projectId) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {
 			if (xhr.status == 200) {
+				let projectDiv = document.getElementById('projectData');
+				projectDiv.textContent = '';
 				let project = JSON.parse(xhr.responseText);
 				displayProject(project);
 				console.log(project);
@@ -41,9 +47,47 @@ function getProject(projectId) {
 	xhr.send();
 };
 
+function getProjectsByActiveStatus() {
+	let xhr = new XMLHttpRequest();
+	xhr.open('GET', 'api/projects/active');
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {
+			if (xhr.status == 200) {
+				let projectDiv = document.getElementById('projectData');
+				projectDiv.textContent = '';
+				let projectList = JSON.parse(xhr.responseText);
+				console.log(projectList);
+				displayProjects(projectList);
+
+			}
+			else {
+				displayError();
+				console.error("No projects found.");
+				console.error(xhr.status + ': ' + xhr.responseText);
+				displayError('No projects found.');
+			}
+		}
+	};
+	xhr.send();
+};
+
+function displayProjects(projectList) {
+	let count = projectList.length;
+	let contractValue = 0; 
+	for (let project of projectList) {
+		displayProject(project);
+		contractValue += project.fee;
+	} 
+	let projectDiv = document.getElementById('projectData');
+	let activeSummary = document.createElement('h2');
+	activeSummary.textContent = count + ' active projects totalling $' + contractValue + ' in professional fees.'
+	activeSummary.style.color = 'darkgreen';
+	projectDiv.prepend(activeSummary);
+};
+
 function displayProject(project) {
 	let projectDiv = document.getElementById('projectData');
-	projectDiv.textContent = '';
+//	projectDiv.textContent = '';
 	let hr = document.createElement('hr');
 	projectDiv.appendChild(hr);
 	let h2Title = document.createElement('h2');
@@ -72,10 +116,11 @@ function displayProject(project) {
 	updatedAtLI.textContent = 'Last Updated: ' + project.updatedAt;
 	dataList.appendChild(updatedAtLI);
 	projectDiv.appendChild(dataList);
-	let noteBlockquote = document.createElement('blockquote');
-	noteBlockquote.textContent = 'Note: ' + project.note;
-	projectDiv.appendChild(noteBlockquote);
-	
+	if (project.note != '') {
+		let noteBlockquote = document.createElement('blockquote');
+		noteBlockquote.textContent = 'Note: ' + project.note;
+		projectDiv.appendChild(noteBlockquote);
+	}
 	projectDiv.appendChild(updateForm(project));
 	projectDiv.appendChild(deleteForm(project.id, project.referenceNumber, project.title));
 	
@@ -98,6 +143,7 @@ function createProject(form) {
 		"fee": Number.parseInt(form.fee.value),
 		"note": form.note.value
 	}
+	form.reset();
 	console.log(project);
 	addProject(project);
 };
@@ -110,13 +156,12 @@ function addProject(project) {
 		if (xhr.readyState === 4) {
 			if (xhr.status == 200 || xhr.status === 201) {
 				let project = JSON.parse(xhr.responseText);
-				//console.log(project);
 				displayProject(project);
 			}
 			else {
 				console.error("POST request failed.");
 				console.error(xhr.status + ': ' + xhr.responseText);
-				displayError('Reference Number already exists in database.');
+				displayError('Project creation failed. Reference Number already exists in database.');
 			}
 		}
 	};
@@ -194,7 +239,6 @@ function updateProjectForm(project) {
 		console.log('Create project update ' + project.id);
 		createUpdateProject(project.id, updateForm);
 	});
-//	  		<button name="createProject">Create Project</button>
 };
 
 function createUpdateProject(projectId, form) {
@@ -229,7 +273,7 @@ function updateProject(project) {
 				displayError();
 				console.error("Project update failed.");
 				console.error(xhr.status + ': ' + xhr.responseText);
-				displayError('Project update failed.');
+				displayError('Project update failed. Reference Number already exists in database.');
 			}
 		}
 	};
@@ -296,12 +340,3 @@ function displayError(errorMessage) {
 	messageElement.style.color = 'red';
 	projectDiv.appendChild(messageElement);
 };
-
-
-
-
-
-
-
-
-

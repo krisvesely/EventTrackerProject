@@ -18,6 +18,11 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<Project> findAll() {
 		return projectRepo.findAll();
 	}
+	
+	@Override
+	public List<Project> findByActiveStatus() {
+		return projectRepo.findByIsActiveTrue();
+	}
 
 	@Override
 	public Project findById(int projectId) {

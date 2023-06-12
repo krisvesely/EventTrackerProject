@@ -39,6 +39,17 @@ public class ProjectController {
 		return project;
 	}
 	
+	
+	@GetMapping("projects/active")
+	public List<Project> showActiveProjects(HttpServletResponse res) {
+		List<Project> projects = projectService.findByActiveStatus();
+		if (projects == null) {
+			res.setStatus(404);
+		}
+		System.out.println(projects);
+		return projects;
+	}
+	
 	@PostMapping("projects")
 	public Project create(HttpServletResponse res, HttpServletRequest req, @RequestBody Project newProject) {
 		try {
