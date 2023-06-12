@@ -2,7 +2,7 @@
 
 ## Overview
 
-Full-Satck Java Spring project backed by a mySQL database that implements a basic REST SPI. 
+Full-Stack Java Spring project backed by a mySQL database that implements a basic REST API. 
 Allows the user to view and modify architectural projects (`events`) within a database using the REST route URIs charted below. 
 The project tracker functions are designed for staff of an architectural firm, allowing them to add, update, and remove 
 projects as they progress through design phases. Project inserts with id values 1-5 are pre-populated.
