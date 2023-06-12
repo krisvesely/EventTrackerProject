@@ -6,13 +6,13 @@ window.addEventListener('load', function(e) {
 });
 
 function init() {
-//	document.searchByIdForm.lookup.addEventListener('click', function(event) {
-//		event.preventDefault();
-//		let projectId = document.searchByIdForm.projectId.value;
-//		if (!isNaN(projectId) && projectId > 0) {
-//			getProject(projectId);
-//		}
-//	});
+	//	document.searchByIdForm.lookup.addEventListener('click', function(event) {
+	//		event.preventDefault();
+	//		let projectId = document.searchByIdForm.projectId.value;
+	//		if (!isNaN(projectId) && projectId > 0) {
+	//			getProject(projectId);
+	//		}
+	//	});
 	document.showAllForm.showAll.addEventListener('click', function(event) {
 		event.preventDefault();
 		getAllProjects();
@@ -56,15 +56,15 @@ function getAllProjects() {
 function displayProjectTable(projectList) {
 	let projectDiv = document.getElementById('projectData');
 	projectDiv.textContent = '';
-	
+
 	let hr = document.createElement('hr');
 	projectDiv.appendChild(hr);
 	let title = document.createElement('h4');
 	title.textContent = 'All Projects';
 	projectDiv.appendChild(title);
 	let projTable = document.createElement('table');
-//	projTable.class = 'table table-striped';
-	
+	//	projTable.class = 'table table-striped';
+
 	let tableHead = document.createElement('thead');
 	let headTr = document.createElement('tr');
 	let head1 = document.createElement('th');
@@ -78,7 +78,7 @@ function displayProjectTable(projectList) {
 	headTr.appendChild(head3);
 	tableHead.appendChild(headTr);
 	projTable.appendChild(tableHead);
-	
+
 	let body = document.createElement('tbody');
 	for (let project of projectList) {
 		let tr = document.createElement('tr');
@@ -104,7 +104,7 @@ function selectForm(projectId) {
 	projectIdInput.type = 'hidden';
 	projectIdInput.name = 'projectId';
 	projectIdInput.value = projectId;
-	selectForm.appendChild(projectIdInput);	
+	selectForm.appendChild(projectIdInput);
 	let selectButton = document.createElement('button');
 	selectButton.textContent = 'Project Details';
 	selectForm.appendChild(selectButton);
@@ -113,7 +113,7 @@ function selectForm(projectId) {
 		console.log('Select project ' + projectId);
 		getProject(projectId);
 	});
-	return selectForm;	
+	return selectForm;
 };
 
 function getProject(projectId) {
@@ -165,13 +165,13 @@ function getProjectsByActiveStatus() {
 
 function displayProjects(projectList) {
 	let count = projectList.length;
-	let contractValue = 0; 
+	let contractValue = 0;
 
 	for (let project of projectList) {
 		displayProject(project);
 		contractValue += project.fee;
-	} 
-	
+	}
+
 	let projectDiv = document.getElementById('projectData');
 	let hr = document.createElement('hr');
 	let activeSummary = document.createElement('h4');
@@ -183,7 +183,7 @@ function displayProjects(projectList) {
 
 function displayProject(project) {
 	let projectDiv = document.getElementById('projectData');
-//	projectDiv.textContent = '';
+	//	projectDiv.textContent = '';
 	let hr = document.createElement('hr');
 	projectDiv.appendChild(hr);
 	let h2Title = document.createElement('h2');
@@ -219,7 +219,7 @@ function displayProject(project) {
 	}
 	projectDiv.appendChild(updateForm(project));
 	projectDiv.appendChild(deleteForm(project.id, project.referenceNumber, project.title));
-	
+
 	let updateDiv = document.getElementById('updateFormDiv');
 	updateDiv.style.display = 'none';
 	let createDiv = document.getElementById('newFormDiv');
@@ -274,7 +274,7 @@ function updateForm(project) {
 	projectIdInput.type = 'hidden';
 	projectIdInput.name = 'projectId';
 	projectIdInput.value = project.id;
-	updateFormBtn.appendChild(projectIdInput);	
+	updateFormBtn.appendChild(projectIdInput);
 	let updateButton = document.createElement('button');
 	updateButton.textContent = 'Update this Project';
 	updateFormBtn.appendChild(updateButton);
@@ -283,178 +283,162 @@ function updateForm(project) {
 		console.log('Update project ' + project.id);
 		updateProjectForm(project);
 	});
-	return updateFormBtn;	
+	return updateFormBtn;
 };
 
 function updateProjectForm(project) {
 	let projectDiv = document.getElementById('projectData');
 	projectDiv.textContent = '';
-//	getProject(project.id);
-	
+	//	getProject(project.id);
+
 	let updateDiv = document.getElementById('updateFormDiv');
 	updateDiv.style.display = 'flex';
 	let createDiv = document.getElementById('newFormDiv');
 	createDiv.style.display = 'none';
-	
+
 	let updateForm = document.updateProjectForm;
 	let referenceNumber = updateForm.referenceNumber;
 	referenceNumber.value = `${project.referenceNumber}`;
 	let title = updateForm.title;
-	title.value =  `${project.title}`;
+	title.value = `${project.title}`;
 	let client = updateForm.client;
-	client.value =  `${project.client}`;
+	client.value = `${project.client}`;
 	let isActive = updateForm.isActive;
 	for (let i = 0; i < isActive.children.length; i++) {
 		if (isActive.children[i].value === `${project.isActive}`) {
 			isActive.children[i].selected = true;
-		}	
+		}
 	}
 	let contractPhase = updateForm.contractPhase;
 	for (let i = 0; i < contractPhase.children.length; i++) {
 		if (contractPhase.children[i].value === `${project.contractPhase}`) {
 			contractPhase.children[i].selected = true;
-		}	
+		}
 	}
 	let workingPhase = updateForm.workingPhase;
 	for (let i = 0; i < workingPhase.children.length; i++) {
 		if (workingPhase.children[i].value === `${project.workingPhase}`) {
 			workingPhase.children[i].selected = true;
-		}	
+		}
 	}
 	let phaseStatus = updateForm.phaseStatus;
 	for (let i = 0; i < phaseStatus.children.length; i++) {
 		if (phaseStatus.children[i].value === `${project.phaseStatus}`) {
 			phaseStatus.children[i].selected = true;
-		}	
+		}
 	}
 	let fee = updateForm.fee;
-	fee.value =  `${project.fee}`;
+	fee.value = `${project.fee}`;
 	let note = updateForm.note;
-	note.value =  `${project.note}`;
+	note.value = `${project.note}`;
 	let submitUpdateBtn = updateForm.updateProject;
 	submitUpdateBtn.addEventListener('click', function(event) {
 		event.preventDefault();
 		console.log('Create project update ' + project.id);
-		createUpdateProject(project.id, project.referenceNumber, updateForm);
+		createUpdateProject(project.id, updateForm);
 	});
 
 };
 
-function createUpdateProject(projectId, refNum, form) {
-	let updatingProject;
-	if (refNum === Number.parseInt(form.referenceNumber.value)) {
-		updatingProject = {
-			"id": projectId,
-	//		"referenceNumber": Number.parseInt(form.referenceNumber.value),
-			"title": form.title.value,
-			"client": form.client.value,
-			"isActive": form.isActive.value,
-			"contractPhase": form.contractPhase.value,
-			"workingPhase": form.workingPhase.value,
-			"phaseStatus": form.phaseStatus.value,
-			"fee": Number.parseInt(form.fee.value),
-			"note": form.note.value
-		}
+function createUpdateProject(projectId, form) {
+	let updatingProject = {
+		"id": projectId,
+		"referenceNumber": Number.parseInt(form.referenceNumber.value),
+		"title": form.title.value,
+		"client": form.client.value,
+		"isActive": form.isActive.value,
+		"contractPhase": form.contractPhase.value,
+		"workingPhase": form.workingPhase.value,
+		"phaseStatus": form.phaseStatus.value,
+		"fee": Number.parseInt(form.fee.value),
+		"note": form.note.value
 	}
-	else {
-		updatingProject = {
-			"id": projectId,
-			"referenceNumber": Number.parseInt(form.referenceNumber.value),
-			"title": form.title.value,
-			"client": form.client.value,
-			"isActive": form.isActive.value,
-			"contractPhase": form.contractPhase.value,
-			"workingPhase": form.workingPhase.value,
-			"phaseStatus": form.phaseStatus.value,
-			"fee": Number.parseInt(form.fee.value),
-			"note": form.note.value
-	}
-	updateProject(updatingProject);		
-};
-
-
-function updateProject(project) {
-	let xhr = new XMLHttpRequest();
-	xhr.open('PUT', 'api/projects/' + project.id);
-	xhr.setRequestHeader("Content-type", "application/json");
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState === 4) {
-			if (xhr.status == 200) {
-				let projectDiv = document.getElementById('projectData');
-				projectDiv.textContent = '';
-				let project = JSON.parse(xhr.responseText);
-				displayProject(project);
-				console.log(project);
-			}
-			else {
-				displayError();
-				console.error("Project update failed.");
-				console.error(xhr.status + ': ' + xhr.responseText);
-				displayError('Project update failed. Reference Number already exists in database.');
-			}
-		}
+	updateProject(updatingProject);
 	};
-	let jsonProject = JSON.stringify(project);
-	xhr.send(jsonProject);
-};
 
-function deleteForm(projectId, projectRefNum, projectTitle) {
-	let deleteForm = document.createElement('form');
-	deleteForm.name = 'deleteProjectForm';
-	let projectIdInput = document.createElement('input');
-	projectIdInput.type = 'hidden';
-	projectIdInput.name = 'projectId';
-	projectIdInput.value = projectId;
-	deleteForm.appendChild(projectIdInput);	
-	let deleteButton = document.createElement('button');
-	deleteButton.textContent = 'Delete this Project';
-	deleteForm.appendChild(deleteButton);
-	deleteButton.addEventListener('click', function(event) {
-		event.preventDefault();
-		console.log('Delete project ' + projectId);
-		deleteProject(projectId, projectRefNum, projectTitle);
-	});
-	return deleteForm;	
-};
 
-function deleteProject(projectId, projectRefNum, projectTitle) {
-	let xhr = new XMLHttpRequest();
-	xhr.open('DELETE', 'api/projects/' + projectId);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState === 4) {
-			if (xhr.status == 204) {
-				let successMessage = projectRefNum + ': ' + projectTitle + ' deleted.';
-				console.log(successMessage);
-				displayDeleteSuccess(successMessage);
-				getAllProjects();
+	function updateProject(project) {
+		let xhr = new XMLHttpRequest();
+		xhr.open('PUT', 'api/projects/' + project.id);
+		xhr.setRequestHeader("Content-type", "application/json");
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4) {
+				if (xhr.status == 200) {
+					let projectDiv = document.getElementById('projectData');
+					projectDiv.textContent = '';
+					let project = JSON.parse(xhr.responseText);
+					displayProject(project);
+					console.log(project);
+				}
+				else {
+					displayError();
+					console.error("Project update failed.");
+					console.error(xhr.status + ': ' + xhr.responseText);
+					displayError('Project update failed. Reference Number already exists in database.');
+				}
 			}
-			else {
-				displayError();
-				console.error("Project not Found.");
-				console.error(xhr.status + ': ' + xhr.responseText);
-				displayError('Project not found.');
-			}
-		}
+		};
+		let jsonProject = JSON.stringify(project);
+		xhr.send(jsonProject);
 	};
-	xhr.send();
-};
 
-function displayDeleteSuccess(successMessage) {
-	let projectDiv = document.getElementById('projectData');
-	projectDiv.textContent = '';
-	let hr = document.createElement('hr');
-	projectDiv.appendChild(hr);
-	let messageElement = document.createElement('h4');
-	messageElement.textContent = successMessage;
-	messageElement.style.fontStyle = 'italic';
-	projectDiv.appendChild(messageElement);
-};
+	function deleteForm(projectId, projectRefNum, projectTitle) {
+		let deleteForm = document.createElement('form');
+		deleteForm.name = 'deleteProjectForm';
+		let projectIdInput = document.createElement('input');
+		projectIdInput.type = 'hidden';
+		projectIdInput.name = 'projectId';
+		projectIdInput.value = projectId;
+		deleteForm.appendChild(projectIdInput);
+		let deleteButton = document.createElement('button');
+		deleteButton.textContent = 'Delete this Project';
+		deleteForm.appendChild(deleteButton);
+		deleteButton.addEventListener('click', function(event) {
+			event.preventDefault();
+			console.log('Delete project ' + projectId);
+			deleteProject(projectId, projectRefNum, projectTitle);
+		});
+		return deleteForm;
+	};
 
-function displayError(errorMessage) {
-	let projectDiv = document.getElementById('projectData');
-	projectDiv.textContent = '';
-	let messageElement = document.createElement('h4');
-	messageElement.textContent = errorMessage;
-	messageElement.style.color = 'red';
-	projectDiv.appendChild(messageElement);
-};
+	function deleteProject(projectId, projectRefNum, projectTitle) {
+		let xhr = new XMLHttpRequest();
+		xhr.open('DELETE', 'api/projects/' + projectId);
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4) {
+				if (xhr.status == 204) {
+					let successMessage = projectRefNum + ': ' + projectTitle + ' deleted.';
+					console.log(successMessage);
+					displayDeleteSuccess(successMessage);
+					getAllProjects();
+				}
+				else {
+					displayError();
+					console.error("Project not Found.");
+					console.error(xhr.status + ': ' + xhr.responseText);
+					displayError('Project not found.');
+				}
+			}
+		};
+		xhr.send();
+	};
+
+	function displayDeleteSuccess(successMessage) {
+		let projectDiv = document.getElementById('projectData');
+		projectDiv.textContent = '';
+		let hr = document.createElement('hr');
+		projectDiv.appendChild(hr);
+		let messageElement = document.createElement('h4');
+		messageElement.textContent = successMessage;
+		messageElement.style.fontStyle = 'italic';
+		projectDiv.appendChild(messageElement);
+	};
+
+	function displayError(errorMessage) {
+		let projectDiv = document.getElementById('projectData');
+		projectDiv.textContent = '';
+		let messageElement = document.createElement('h4');
+		messageElement.textContent = errorMessage;
+		messageElement.style.color = 'red';
+		projectDiv.appendChild(messageElement);
+	};

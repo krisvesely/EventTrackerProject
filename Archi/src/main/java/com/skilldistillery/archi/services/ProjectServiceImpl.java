@@ -45,7 +45,9 @@ public class ProjectServiceImpl implements ProjectService {
 			return null;
 		}
 		Project managedProject = projectRepo.findById(projectId);
-		managedProject.setReferenceNumber(updatingProject.getReferenceNumber());
+		if (managedProject.getReferenceNumber() != updatingProject.getReferenceNumber()) {
+			managedProject.setReferenceNumber(updatingProject.getReferenceNumber());
+		}
 		managedProject.setTitle(updatingProject.getTitle());
 		managedProject.setClient(updatingProject.getClient());
 		managedProject.setIsActive(updatingProject.getIsActive());
