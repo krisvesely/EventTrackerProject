@@ -335,23 +335,39 @@ function updateProjectForm(project) {
 	submitUpdateBtn.addEventListener('click', function(event) {
 		event.preventDefault();
 		console.log('Create project update ' + project.id);
-		createUpdateProject(project.id, updateForm);
+		createUpdateProject(project.id, project.referenceNumber, updateForm);
 	});
 
 };
 
-function createUpdateProject(projectId, form) {
-	let updatingProject = {
-		"id": projectId,
-		"referenceNumber": Number.parseInt(form.referenceNumber.value),
-		"title": form.title.value,
-		"client": form.client.value,
-		"isActive": form.isActive.value,
-		"contractPhase": form.contractPhase.value,
-		"workingPhase": form.workingPhase.value,
-		"phaseStatus": form.phaseStatus.value,
-		"fee": Number.parseInt(form.fee.value),
-		"note": form.note.value
+function createUpdateProject(projectId, refNum, form) {
+	let updatingProject;
+	if (refNum === Number.parseInt(form.referenceNumber.value)) {
+		updatingProject = {
+			"id": projectId,
+	//		"referenceNumber": Number.parseInt(form.referenceNumber.value),
+			"title": form.title.value,
+			"client": form.client.value,
+			"isActive": form.isActive.value,
+			"contractPhase": form.contractPhase.value,
+			"workingPhase": form.workingPhase.value,
+			"phaseStatus": form.phaseStatus.value,
+			"fee": Number.parseInt(form.fee.value),
+			"note": form.note.value
+		}
+	}
+	else {
+		updatingProject = {
+			"id": projectId,
+			"referenceNumber": Number.parseInt(form.referenceNumber.value),
+			"title": form.title.value,
+			"client": form.client.value,
+			"isActive": form.isActive.value,
+			"contractPhase": form.contractPhase.value,
+			"workingPhase": form.workingPhase.value,
+			"phaseStatus": form.phaseStatus.value,
+			"fee": Number.parseInt(form.fee.value),
+			"note": form.note.value
 	}
 	updateProject(updatingProject);		
 };
