@@ -251,6 +251,8 @@ function addProject(project) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {
 			if (xhr.status == 200 || xhr.status === 201) {
+				let projectDiv = document.getElementById('projectData');
+				projectDiv.textContent = '';
 				let project = JSON.parse(xhr.responseText);
 				displayProject(project);
 			}
@@ -362,6 +364,8 @@ function updateProject(project) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {
 			if (xhr.status == 200) {
+				let projectDiv = document.getElementById('projectData');
+				projectDiv.textContent = '';
 				let project = JSON.parse(xhr.responseText);
 				displayProject(project);
 				console.log(project);
