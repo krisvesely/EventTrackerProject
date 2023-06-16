@@ -1,0 +1,17 @@
+<h2>Welcome to the Archi Project Tracker</h2>
+<div id="projectListDiv">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="column">Ref. No.</th>
+        <th class="column">Title</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let project of projects">
+        <td>{{project.referenceNumber}}</td>
+        <td>{{project.title}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
