@@ -56,3 +56,19 @@ adaptive to form values and JSON responses.
 - Aggregated project data and presented a summary preceding the representation of filtered event objects: 
 users can select all projects with a boolean `isActive` field set to true, and view the correlated 
 project count and the sum of the contract values.
+
+## Angular Front End
+
+### Technologies Used
+
+- Angular
+- Bootstrap
+
+### Lessons Learned
+
+- Created components that called service methods to display database information.
+- Sent asynchronous requests using HttpClient to interact with the RESTful API.
+- Employed Angular directives to bind models to form inputs.
+- Used built-in pipes to formate displayed data for currency and dates; injected a custom pipe to allow the user
+ to display all projects or only active projects, and to display an active projects count.
+- Employed routing to direct component display and navigation by url; passed data using route params.
