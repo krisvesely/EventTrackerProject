@@ -1,17 +1,161 @@
-<h2>Welcome to the Archi Project Tracker</h2>
-<div id="projectListDiv">
+<div style="text-align: center; margin-top: 10px">
+  <h3 *ngIf="!selected"><em>Welcome to the Archi Project Tracker</em></h3>
+</div>
+<div id="projectListDiv" *ngIf="!selected">
+  <hr>
+  <h4><span *ngIf="!showInactive">{{getProjectCount()}} Active </span><span *ngIf="showInactive">All </span>Projects:</h4>
   <table class="table table-striped">
     <thead>
       <tr>
-        <th class="column">Ref. No.</th>
+        <th class="column">Ref. #</th>
         <th class="column">Title</th>
+        <th class="column">Active</th>
+        <th class="column">Delete</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let project of projects">
-        <td>{{project.referenceNumber}}</td>
+      <tr *ngFor="let project of projects | showAll:showInactive" >
+        <td><button type="button" id="refNumBtn" class="btn btn-outline-dark" (click)="displayProject(project)">{{project.referenceNumber}}</button></td>
         <td>{{project.title}}</td>
+        <!-- <td *ngIf="project.isActive">&#x2611;</td> -->
+        <td><input type="checkbox" id="isActive" class="button-check-secondary" name="isActive" (change)="updateProjectIsActive(project)" [(ngModel)]="project.isActive" /></td>
+        <td><button type="button" id="deleteBtn" class="btn btn-outline-dark" (click)="deleteProject(project.referenceNumber)">X</button></td>
       </tr>
     </tbody>
   </table>
+  <input class="button-check-secondary" id="showInactive" type="checkbox" (click)="showInactive = true" [(ngModel)]="showInactive" />
+<label for="showInactive">&ensp;Show Inactive Projects</label>
 </div>
+
+<div id="addProjectForm" *ngIf="!selected && !editProject" >
+  <hr>
+  <!-- <div class="d-flex flex-column bd-highlight mb-3" style="width: 50%; justify-content: center; border: solid;"> -->
+     <h4>Add New Project:</h4>
+     <label for="referenceNumber">Reference Number:&ensp;</label>
+     <input type="number" id="referenceNumber" name="referenceNumber" [(ngModel)]="newProject.referenceNumber" min="1000" max="9999">
+     <label for="referenceNumber"><em>&ensp;must be unique</em></label>
+     <br>
+     <input type="text" name="title" [(ngModel)]="newProject.title" placeholder="Project Title" required>
+     <br>
+     <input type="text" name="client" [(ngModel)]="newProject.client" placeholder="Client" required>
+     <br>
+     <label for="isActive">Active:&ensp;</label>
+     <select id="isActive" name="isActive" [(ngModel)]="newProject.isActive">
+       <option value="true">true</option>
+       <option value="false">false</option>
+     </select>
+     <br>
+     <label for="contractPhase">Contract Phase:</label>
+     <br>
+     <select id="contractPhase" name="contractPhase" [(ngModel)]="newProject.contractPhase">
+       <option value="Consultation">Consultation</option>
+       <option value="15% Preliminary Design">15% Preliminary Design</option>
+       <option value="35% Schematic Design">35% Schematic Design</option>
+       <option value="65% Design Development">65% Design Development</option>
+       <option value="100% Construction Documents">100% Construction Documents</option>
+       <option value="Construction Supervision">Construction Supervision</option>
+     </select><br>
+   <label for="workingPhase">Working Phase:</label>
+     <br>
+     <select id="workingPhase" name="workingPhase" [(ngModel)]="newProject.workingPhase">
+       <option value="Consultation">Consultation</option>
+       <option value="15% Preliminary Design">15% Preliminary Design</option>
+       <option value="35% Schematic Design">35% Schematic Design</option>
+       <option value="65% Design Development">65% Design Development</option>
+       <option value="100% Construction Documents">100% Construction Documents</option>
+       <option value="Construction Supervision">Construction Supervision</option>
+     </select><br>
+     <label for="phaseStatus">Phase Status:</label>
+     <br>
+     <select id="phaseStatus" name="phaseStatus" [(ngModel)]="newProject.phaseStatus">
+       <option value="Pending Contract">Pending Contract</option>
+       <option value="Pending Payment">Pending Payment</option>
+       <option value="Working">Working</option>
+       <option value="In Review">In Review</option>
+       <option value="Delivered">Delivered</option>
+       <option value="Revisions">Revisions</option>
+       <option value="Accepted/Complete">Accepted/Complete</option>
+     </select>
+     <br>
+     <label for="fee">Fee: $</label>
+     <input type="number" id="fee" name="fee" [(ngModel)]="newProject.fee" min="0">
+     <br>
+     <label for="note">Note:&ensp;</label>
+     <input type="text" [(ngModel)]="newProject.note" name="note">
+     <br>
+     <input class="btn btn-outline-dark" type="submit" value="Create Project" (click)="addProject(newProject)" />
+<!-- </div> -->
+ </div>
+
+
+<div name="detailProjectView" *ngIf="selected && !editProject">
+  <h4>{{ selected.referenceNumber }} {{ selected.title }}</h4>
+  <p>Client: {{ selected.client }}</p>
+  <p>Active: {{ selected.isActive }}</p>
+  <p>Contract Phase: {{ selected.contractPhase }}</p>
+  <p>Working Phase: {{ selected.workingPhase }}</p>
+  <p>Phase Status: {{ selected.phaseStatus }}</p>
+  <p>Fee: {{ selected.fee | currency}}</p>
+  <p *ngIf="selected.note">Note: {{ selected.note }}</p>
+  <p>Last Update: {{ selected.updatedAt | date:'shortDate' }}</p>
+  <button class="btn btn-outline-dark" (click)="displayProjectList()">Back</button>
+  <button class="btn btn-outline-dark" (click)="setEditProject()">Edit</button>
+</div>
+
+<div id="editProjectForm" *ngIf="editProject" >
+  <hr>
+     <h4>Edit Project:</h4>
+     <label for="referenceNumber">Reference Number:&ensp;</label>
+     <input type="number" id="referenceNumber" name="referenceNumber" [(ngModel)]="editProject.referenceNumber" min="1000" max="9999">
+     <br>
+     <input type="text" name="title" [(ngModel)]="editProject.title">
+     <br>
+     <input type="text" name="client" [(ngModel)]="editProject.client">
+     <br>
+     <label for="isActive">Active:&ensp;</label>
+     <select id="isActive" name="isActive" [(ngModel)]="editProject.isActive">
+       <option value="true">true</option>
+       <option value="false">false</option>
+     </select>
+     <br>
+     <label for="contractPhase">Contract Phase:</label>
+     <br>
+     <select id="contractPhase" name="contractPhase" [(ngModel)]="editProject.contractPhase">
+       <option value="Consultation">Consultation</option>
+       <option value="15% Preliminary Design">15% Preliminary Design</option>
+       <option value="35% Schematic Design">35% Schematic Design</option>
+       <option value="65% Design Development">65% Design Development</option>
+       <option value="100% Construction Documents">100% Construction Documents</option>
+       <option value="Construction Supervision">Construction Supervision</option>
+     </select><br>
+   <label for="workingPhase">Working Phase:</label>
+     <br>
+     <select id="workingPhase" name="workingPhase" [(ngModel)]="editProject.workingPhase">
+       <option value="Consultation">Consultation</option>
+       <option value="15% Preliminary Design">15% Preliminary Design</option>
+       <option value="35% Schematic Design">35% Schematic Design</option>
+       <option value="65% Design Development">65% Design Development</option>
+       <option value="100% Construction Documents">100% Construction Documents</option>
+       <option value="Construction Supervision">Construction Supervision</option>
+     </select><br>
+     <label for="phaseStatus">Phase Status:</label>
+     <br>
+     <select id="phaseStatus" name="phaseStatus" [(ngModel)]="editProject.phaseStatus">
+       <option value="Pending Contract">Pending Contract</option>
+       <option value="Pending Payment">Pending Payment</option>
+       <option value="Working">Working</option>
+       <option value="In Review">In Review</option>
+       <option value="Delivered">Delivered</option>
+       <option value="Revisions">Revisions</option>
+       <option value="Accepted/Complete">Accepted/Complete</option>
+     </select>
+     <br>
+     <label for="fee">Fee: $</label>
+     <input type="number" id="fee" name="fee" [(ngModel)]="editProject.fee" min="0">
+     <br>
+     <label for="note">Note:&ensp;</label>
+     <input type="text" [(ngModel)]="editProject.note" name="note">
+     <br>
+     <button class="btn btn-outline-dark" (click)="cancelEdit()">Cancel</button>
+     <input class="btn btn-outline-dark" type="submit" value="Update Project" (click)="updateProject(editProject)" />
+ </div>

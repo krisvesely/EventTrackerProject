@@ -9,8 +9,9 @@ public interface ProjectService {
 	List<Project> findAll();
 	List<Project> findByActiveStatus();
 	Project findById(int projectId);
+	Project findByRefNum(int refNum);
 	Project create(Project newProject);
-	Project update(int projectId, Project updatingProject);
-	boolean delete(int projectId);
+	Project update(int refNum, Project updatingProject);
+	boolean delete(int refNum);
 
 }

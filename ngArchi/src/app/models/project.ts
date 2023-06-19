@@ -14,7 +14,7 @@ export class Project {
 
   constructor(
   id: number = 0,
-	referenceNumber: number = 0,
+	referenceNumber: number = 1000,
   title: string | null = null,
 	client: string | null = null,
   isActive: boolean = false,

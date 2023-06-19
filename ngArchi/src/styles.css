@@ -1,1 +1,17 @@
 @import "~bootstrap/dist/css/bootstrap.css";
+
+
+#refNumBtn {
+  min-width: 65px;
+  max-width: 65px;
+}
+
+#deleteBtn {
+  min-width: 40px;
+  max-width: 40px;
+}
+
+
+#isActive:checked {
+  background-color: white;
+}

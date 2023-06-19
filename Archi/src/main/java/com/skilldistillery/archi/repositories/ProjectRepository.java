@@ -10,5 +10,10 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
 	
 	Project findById(int id);
 	
+	Project findByReferenceNumber(int refNum);
+	
 	List<Project> findByIsActiveTrue();
+	
+	List<Project> findAllByOrderByReferenceNumberAsc();
+
 }

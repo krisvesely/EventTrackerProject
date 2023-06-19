@@ -32,9 +32,9 @@ public class ProjectController {
 		return projectService.findAll();
 	}
 	
-	@GetMapping("projects/{id}")
-	public Project showProjectById(HttpServletResponse res, @PathVariable("id") int projectId) {
-		Project project = projectService.findById(projectId);
+	@GetMapping("projects/{refNum}")
+	public Project showProjectById(HttpServletResponse res, @PathVariable("refNum") int refNum) {
+		Project project = projectService.findByRefNum(refNum);
 		if (project == null) {
 			res.setStatus(404);
 		}
@@ -68,10 +68,10 @@ public class ProjectController {
 		return newProject;
 	}
 	
-	@PutMapping("projects/{id}")
-	public Project replace(HttpServletResponse res, @PathVariable("id") int projectId, @RequestBody Project updatingProject) {
+	@PutMapping("projects/{refNum}")
+	public Project replace(HttpServletResponse res, @PathVariable("refNum") int refNum, @RequestBody Project updatingProject) {
 		try {
-			updatingProject = projectService.update(projectId, updatingProject);
+			updatingProject = projectService.update(refNum, updatingProject);
 			if (updatingProject == null) {
 				res.setStatus(404);
 			}
@@ -84,9 +84,9 @@ public class ProjectController {
 		return updatingProject;
 	}
 	
-	@DeleteMapping("projects/{id}")
-	public void delete(HttpServletResponse res, @PathVariable("id") int projectId) {
-		if (projectService.delete(projectId)) {
+	@DeleteMapping("projects/{refNum}")
+	public void delete(HttpServletResponse res, @PathVariable("refNum") int refNum) {
+		if (projectService.delete(refNum)) {
 			res.setStatus(204);
 		}
 		else {

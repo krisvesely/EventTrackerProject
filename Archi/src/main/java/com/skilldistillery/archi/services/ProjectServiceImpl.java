@@ -16,7 +16,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public List<Project> findAll() {
-		return projectRepo.findAll();
+		return projectRepo.findAllByOrderByReferenceNumberAsc();
 	}
 	
 	@Override
@@ -32,6 +32,17 @@ public class ProjectServiceImpl implements ProjectService {
 		Project project = projectRepo.findById(projectId);
 		return project;
 	}
+	
+	@Override
+	public Project findByRefNum(int refNum) {
+		try {
+		Project project = projectRepo.findByReferenceNumber(refNum);
+		return project;
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
 
 	@Override
 	public Project create(Project newProject) {
@@ -40,38 +51,60 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public Project update(int projectId, Project updatingProject) {
-		if (!projectRepo.existsById(projectId)) {
+	public Project update(int refNum, Project updatingProject) {
+		try {
+			Project managedProject = projectRepo.findByReferenceNumber(refNum);
+			
+			if (managedProject.getReferenceNumber() != updatingProject.getReferenceNumber()) {
+				managedProject.setReferenceNumber(updatingProject.getReferenceNumber());
+			}
+			managedProject.setTitle(updatingProject.getTitle());
+			managedProject.setClient(updatingProject.getClient());
+			managedProject.setIsActive(updatingProject.getIsActive());
+			managedProject.setContractPhase(updatingProject.getContractPhase());
+			managedProject.setWorkingPhase(updatingProject.getWorkingPhase());
+			managedProject.setPhaseStatus(updatingProject.getPhaseStatus());
+			managedProject.setFee(updatingProject.getFee());
+			managedProject.setNote(updatingProject.getNote());
+			managedProject = projectRepo.saveAndFlush(managedProject);
+			return managedProject;
+		}
+		catch (Exception e) {
 			return null;
 		}
-		Project managedProject = projectRepo.findById(projectId);
-		if (managedProject.getReferenceNumber() != updatingProject.getReferenceNumber()) {
-			managedProject.setReferenceNumber(updatingProject.getReferenceNumber());
-		}
-		managedProject.setTitle(updatingProject.getTitle());
-		managedProject.setClient(updatingProject.getClient());
-		managedProject.setIsActive(updatingProject.getIsActive());
-		managedProject.setContractPhase(updatingProject.getContractPhase());
-		managedProject.setWorkingPhase(updatingProject.getWorkingPhase());
-		managedProject.setPhaseStatus(updatingProject.getPhaseStatus());
-		managedProject.setFee(updatingProject.getFee());
-		managedProject.setNote(updatingProject.getNote());
-		managedProject = projectRepo.saveAndFlush(managedProject);
-		return managedProject;
+
 	}
 
+//	@Override
+//	public boolean delete(int projectId) {
+//		if (!projectRepo.existsById(projectId)) {
+//			return false;
+//		}
+//		projectRepo.deleteById(projectId);
+//		if (!projectRepo.existsById(projectId)) {
+//			return true;
+//		}
+//		else {
+//			return false;
+//		}
+//	}
+	
 	@Override
-	public boolean delete(int projectId) {
-		if (!projectRepo.existsById(projectId)) {
+	public boolean delete(int refNum) {
+		try {
+			Project projectToDelete = projectRepo.findByReferenceNumber(refNum);
+			projectRepo.deleteById(projectToDelete.getId());
+			if (!projectRepo.existsById(projectToDelete.getId())) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		catch (Exception e) {
 			return false;
 		}
-		projectRepo.deleteById(projectId);
-		if (!projectRepo.existsById(projectId)) {
-			return true;
-		}
-		else {
-			return false;
-		}
+
 	}
 
 }
